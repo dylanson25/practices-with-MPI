@@ -34,5 +34,4 @@ Se deberán utilizar funciones para dividir y distribuir los datos a todos los p
 ## Indicaciones: 
 
 - Para un valor específico de N, ejecutar el programa con al menos 5 diferentes números de  procesadores, tomar el tiempo de ejecución con cada uno y generar una gráfica de Speedup. 
-- Realizar el paso 2 con al menos 3 valores diferentes de N 
-- Generar 3 gráficas de Speedup.
+- Realizar el paso anterior con al menos 3 valores diferentes de N 
