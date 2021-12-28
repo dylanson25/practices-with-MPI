@@ -6,18 +6,29 @@
 
 int main(int argc, char **argv){
 
-    const int N = 1000;
+    //Nos indica cuantos numeros vamos a cpnsiderar
+    const int N = 1000; 
+    //Quien es el proceso raiz
     const int ProcRaiz = 0;
 
+    //Variables de mi id y el total de procesos
     int MiID, TotProcesos;
 
+    //Datos contine los N elementos la utiliza solo elemento raiz
     int Datos[N];
+    //Datos_local va a contener los elementos locales
     int Datos_local[N];
 
     int i;
+
+    //Tamaño de bloque 
     int Block_size;
+    //suma de cada proceso
     int Suma_local;
+    //suma total del resultado de cada proceso
     int Suma_Total;
+
+    //Variables para tomar el tiempo de procesamiento
     double Tiempo_inicial, Tiempo_final, Tiempo_total;
 
     //Initializes the MPI execution environment. The variables argc and argv are pointers to command line arguments.
@@ -31,27 +42,38 @@ int main(int argc, char **argv){
     all the processes on the cluster would be used and stored in the variable of size.*/
    MPI_Comm_size( MPI_COMM_WORLD , &TotProcesos);
 
+    //ver si el proceso actual es el proceso raiz
    if (MiID == ProcRaiz){
+       //Ciclo que genera numeros aleatorios
        for (i = 0; i < N; i++){
            Datos[i] = rand()%11;
        }
       printf("\n")
+      //inidica cuando inicio la ejecucion 
       Tiempo_inicial = MPI_Wtime();
        
    }
+   //tamaño de los vloques en que se va a dividir la informacion
     Block_size = N / TotProcesos;
+    /*si es el proceso raiz envia informacion y recive si no es el proceso raiz 
+    envia la informacion a los demas procesos que se guarda en la variable de datos local*/
     MPI_Scatter( Datos , Block_size , MPI_INT , Datos_local , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
-
+    //suma los datos locales
     Suma_local = 0;
     for (i = 0 ; i < Block_size ; i++)
         Suma_local += Datos_local[i];
-
+    
+    // prueba de suma de cada proceso, su id y su resultado
     printf("Suma local del proceso %d : %d\n", MiID, Suma_local);
 
+    //recolecta la suma local de cada proceso y en este caso la suma y recibe el proceso raiz
     MPI_Reduce(&Suma_local, &Suma_Total, 1, MPI_INT, MPI_SUM, ProcRaiz, MPI_COMM_WORLD);
+    
 
     if (MiID == ProcRaiz){
+        //indica el tiempo en el que termino
         Tiempo_final = MPI_Wtime();
+        //obtenemos el tiempo que tardo en ejecutarse
         Tiempo_total = Tiempo_inicial - Tiempo_final;
         printf("Suma total : %d con %d procesos en un tiempo de %f\n", Suma_Total, TotProcesos, Tiempo_total);
 
