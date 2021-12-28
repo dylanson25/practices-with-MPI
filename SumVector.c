@@ -1,3 +1,5 @@
+/*Programa en mpi para la suma de un vector*/
+
 //Librerias necesarias
 #include <stdio.h>
 #include <stdlib.h>
