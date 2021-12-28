@@ -1,6 +1,8 @@
+//Librerias necesarias
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
+
 
 int main(int argc, char **argv){
 
@@ -18,8 +20,15 @@ int main(int argc, char **argv){
     int Suma_Total;
     double Tiempo_inicial, Tiempo_final, Tiempo_total;
 
+    //Initializes the MPI execution environment. The variables argc and argv are pointers to command line arguments.
    MPI_Init(  &argc , &argv);
+   
+   /*Determines the rank of the calling process in a communicator. The rank is an integer value of 0 to n-1, with n being the size of the communicator. 
+   This way each process has a unique ID that we can use to communicate messages between processes.*/
    MPI_Comm_rank( MPI_COMM_WORLD , &MiID);
+    
+    /*Gets the number of processes that are associated with a specific communicator. If MPI_COMM_WORLD is used as the communicator, 
+    all the processes on the cluster would be used and stored in the variable of size.*/
    MPI_Comm_size( MPI_COMM_WORLD , &TotProcesos);
 
    if (MiID == ProcRaiz){
@@ -47,6 +56,8 @@ int main(int argc, char **argv){
         printf("Suma total : %d con %d procesos en un tiempo de %f\n", Suma_Total, TotProcesos, Tiempo_total);
 
     }
+
+    //Terminates the MPI execution environment. The final MPI call that should be made, after it no MPI routines can be called.
     MPI_Finalize();
 
 
