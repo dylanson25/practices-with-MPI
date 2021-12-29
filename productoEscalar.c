@@ -51,8 +51,14 @@ int main(int argc, char **argv){
        //Ciclo que genera numeros aleatorios
        for (i = 0; i < N; i++){
            //numero aleatorio entre 0 y 50
-           Datos[i] = rand()%51;
+           Vector_localA[i] = rand()%51;
        }
+      srand(MPI_Wtime());
+       for (i = 0; i < N; i++){
+           //numero aleatorio entre 0 y 50
+           Vector_localB[i] = rand()%51;
+       }
+
       printf("\n");
       //inidica cuando inicio la ejecucion 
       Tiempo_inicial = MPI_Wtime();
