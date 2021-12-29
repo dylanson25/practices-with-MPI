@@ -46,8 +46,6 @@ int main(int argc, char **argv){
 
     //ver si el proceso actual es el proceso raiz
    if (MiID == ProcRaiz){
-      //genera una nueva semilla para que me de numeros aleatorios diferentes cada que se ejecute
-      srand(MPI_Wtime());
        //Ciclo que genera numeros aleatorios
        for (i = 0; i < N; i++){
            //numero aleatorio entre 0 y 50
