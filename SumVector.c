@@ -50,7 +50,7 @@ int main(int argc, char **argv){
        for (i = 0; i < N; i++){
            Datos[i] = rand()%11;
        }
-      printf("\n")
+      printf("\n");
       //inidica cuando inicio la ejecucion 
       Tiempo_inicial = MPI_Wtime();
        
