@@ -76,7 +76,7 @@ int main(int argc, char **argv){
         //indica el tiempo en el que termino
         Tiempo_final = MPI_Wtime();
         //obtenemos el tiempo que tardo en ejecutarse
-        Tiempo_total = Tiempo_inicial - Tiempo_final;
+        Tiempo_total = Tiempo_final - Tiempo_inicial ;
         printf("Suma total : %d con %d procesos en un tiempo de %f\n", Suma_Total, TotProcesos, Tiempo_total);
 
     }
