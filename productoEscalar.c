@@ -72,17 +72,15 @@ int main(int argc, char **argv){
     MPI_Scatter( VectorB , Block_size , MPI_INT , Vector_localB , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
     
    //Multiplicacion escalar local
+    Suma_local = 0;
    for ( i = 0; i < Block_size; i++)
    {
        Result_producto[i] = Vector_localA[i] * Vector_localB[i]; 
-       console.log("%d + %d \n",Vector_localA[i] * Vector_localB[i] );
+        Suma_local += Result_producto[i];
+       printf("proceso %d se opero %d + %d \n",MiID, Vector_localA[i], Vector_localB[i] );
    }
    
    
-    //suma los datos locales
-    Suma_local = 0;
-    for (i = 0 ; i < Block_size ; i++)
-        Suma_local += Result_producto[i];
     
     // prueba de suma de cada proceso, su id y su resultado
     printf("Suma local del proceso %d : %d\n", MiID, Suma_local);
