@@ -30,6 +30,7 @@ int main (int argc, char** argv){
     */
    /** 
     * MPI_Recv( void* buf , int count , MPI_Datatype datatype , int source , int tag , MPI_Comm comm , MPI_Status* status);
+    * buf=>indica en donde se va a guardar la informacion que se reciva
     * Count => Entero que indica el numero máximo de elementos que se espera recibir en el buffer de entrada
     * Datatype => tipo de dato de cada elemento de origen que se va a recibir
     * Source => Numero del proceso origen esperado, solo acepta mensajes cuyo origen sea el especificado
@@ -38,7 +39,7 @@ int main (int argc, char** argv){
     * Status => Objeto de tipo MPI_Status contiene datos relevantes sobre el mensaje
     * ---------------------------------------------------------------------------------
     *  MPI_Recv( &p , 1 , MPI_INT, 0 , 100 , MPI_COMM_WORLD , &status);
-    * p => indica el numero maximo de elementos que se espera recibir en el buffer de entrada en este caso seria 4
+    * p => variable en la que se va a guardar la informacion que se reciba
     * 1 => no se
     * MPI_INT => el dato enviado es un entero
     * 0 => el proceso o es el proceso origen
@@ -50,7 +51,6 @@ int main (int argc, char** argv){
 
     printf("%d", p);
     MPI_Finalize();
-/*teoricamente y por lo que entiendo al analizar el codigo es que p es el numero maximo que van a recibir 
-el mensaje por lo tanto en este caso seria 4 que son los procesadores a usar
+/*teoricamente y por lo que entiendo al analizar el codigo es que p 
 */
 }
