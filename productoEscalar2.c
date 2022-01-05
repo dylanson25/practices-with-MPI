@@ -19,17 +19,13 @@ int main(int argc, char **argv){
     //Variables de mi id y el total de procesos
     int MiID, TotProcesos;
 
-    //Vectores contine los N elementos la utiliza solo elemento raiz
-    int VectorA[N];
-    int VectorB[N];
+    
     //Datos_local va a contener los elementos locales
     int Vector_localA[N];
     int Vector_localB[N];
 
     int i;
-
-    //Tamaño de bloque 
-    int Block_size;
+ 
     //Resusltado del producto escalar local de cada vector
     int Result_producto[N];
     //Suma de los resultados locales
@@ -50,9 +46,14 @@ int main(int argc, char **argv){
     /*Gets the number of processes that are associated with a specific communicator. If MPI_COMM_WORLD is used as the communicator, 
     all the processes on the cluster would be used and stored in the variable of size.*/
    MPI_Comm_size( MPI_COMM_WORLD , &TotProcesos);
+    //Tamaño de bloque
+    int Block_size = N / TotProcesos;;
 
     //ver si el proceso actual es el proceso raiz
    if (MiID == ProcRaiz){
+       //Vectores contine los N elementos la utiliza solo elemento raiz
+        int VectorA[N];
+        int VectorB[N];
        //Ciclo que genera numeros aleatorios
        for (i = 0; i < N; i++){
            //numero aleatorio entre 0 y 50
@@ -67,15 +68,12 @@ int main(int argc, char **argv){
       printf("\n");
       //inidica cuando inicio la ejecucion 
       Tiempo_inicial = MPI_Wtime();
-       
+       /*si es el proceso raiz envia informacion y recive si no es el proceso raiz 
+        envia la informacion a los demas procesos que se guarda en la variable de datos local*/
+        MPI_Scatter( VectorA , Block_size , MPI_INT , Vector_localA , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
+        MPI_Scatter( VectorB , Block_size , MPI_INT , Vector_localB , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);       
    }
-   //tamaño de los vloques en que se va a dividir la informacion
-    Block_size = N / TotProcesos;
-    /*si es el proceso raiz envia informacion y recive si no es el proceso raiz 
-    envia la informacion a los demas procesos que se guarda en la variable de datos local*/
-    MPI_Scatter( VectorA , Block_size , MPI_INT , Vector_localA , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
-    MPI_Scatter( VectorB , Block_size , MPI_INT , Vector_localB , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
-    
+   
    //Multiplicacion escalar local
     Suma_local = 0;
    for ( i = 0; i < Block_size; i++)
