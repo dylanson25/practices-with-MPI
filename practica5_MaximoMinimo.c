@@ -20,5 +20,48 @@
 #include <mpi.h>
 
 int main(int argc, char **argv){
+    int N = 1000;
+    int ProcRaiz = 0;
+    int i;
 
+    int MaximoLocal;
+
+    double Tiempo_inicial, Tiempo_final, Tiempo_total;
+
+    int MiID, TotProcesos;
+
+    MPI_Init( &argc , &argv);
+    MPI_Comm_rank( MPI_COMM_WORLD , &MiID);
+    MPI_Comm_size(MPI_COMM_WORLD, &TotProcesos);
+
+    int Block_size = N / TotProcesos;
+    int Vector_local[Block_size];
+    
+    if((N % TotProcesos) == 0){
+        int VectorA[N];
+
+        srand(MPI_Wtime());
+        for ( i = 0; i < N; i++)
+            VectorB[i] = rand()%101;
+        
+        Tiempo_inicial = MPI_Wtime();
+        MPI_Scatter( VectorA , Block_size , MPI_INT , Vector_local , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
+    }
+    
+    MaximoLocal = 0;
+    for ( i = 0; i < Block_size; i++){
+       MaximoLocal = MaximoLocal < Vector_local[i] ? Vector_local[i] : MaximoLocal; 
+    }
+
+    printf("Maximo local del proceso %d : %d\n", MiID, MaximoLocal);
+
+    MPI_Reduce(&MaximoLocal, &MaximoLocal, 1, MPI_INT, MPI_MAX, ProcRaiz, MPI_COMM_WORLD);
+
+    if(MiID == ProcRaiz){
+        Tiempo_final = MPI_Wtime();
+        Tiempo_total = Tiempo_final - Tiempo_inicial;
+        printf("Maximo total : %d con %d procesos en un tiempo de %f\n", Suma_Total, TotProcesos, Tiempo_total);
+    }
+
+    
 }
