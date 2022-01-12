@@ -9,6 +9,12 @@ int main (int argc, char** argv){
     MPI_Init (&argc, &argv);
     MPI_Comn_rank(MPI_COMM_WORLD, &n);//id del proceso
     MPI_Comn_size(MPI_COMM_WORLD, &m);//cuntos procesos
+    if(n==0) MPI_send(&m, 1, MPI_INT, 1, 100, MPI_COMM_WORLD);
+    else MPI_Recv( &p , 1 , MPI_INT, 0 , 100 , MPI_COMM_WORLD , &status);
+
+    printf("%d", p);
+    MPI_Finalize(); 
+
     /** 
      * MPI_Send( const void* buf , int count , MPI_Datatype datatype , int dest , int tag , MPI_Comm comm);
      *  buf => Dirección inicial del buffer de envío. Esto significa que requiere un puntero. Si
@@ -40,17 +46,9 @@ int main (int argc, char** argv){
     * ---------------------------------------------------------------------------------
     *  MPI_Recv( &p , 1 , MPI_INT, 0 , 100 , MPI_COMM_WORLD , &status);
     * p => variable en la que se va a guardar la informacion que se reciba
-    * 1 => no se
+    * 1 => valores que se van a recibir
     * MPI_INT => el dato enviado es un entero
     * 0 => el proceso o es el proceso origen
     * MPI_COMM_WORLD => comunicador que se usara 
     * status => objeto con los datos relevantes sobre el mensaje
-   */
-    if(n==0) MPI_send(&m, 1, MPI_INT, 1, 100, MPI_COMM_WORLD);
-    else MPI_Recv( &p , 1 , MPI_INT, 0 , 100 , MPI_COMM_WORLD , &status);
-
-    printf("%d", p);
-    MPI_Finalize();
-/*teoricamente y por lo que entiendo al analizar el codigo es que p 
-*/
-}
+   4 */
