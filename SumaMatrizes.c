@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <mpi.h>
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
 
     //Nos indica cuantos numeros vamos a cpnsiderar
-    const int N = 4; 
-    const int M = 3; 
+    const int N = 4;
+    const int M = 3;
 
     //Quien es el proceso raiz
     const int ProcRaiz = 0;
@@ -21,11 +22,10 @@ int main(int argc, char **argv){
     //Datos_local va a contener los elementos locales
     int Vector_localA[M];
     int Vector_localB[M];
-    in
 
     int i;
 
-    //Tamaño de bloque 
+    //Tamaño de bloque
     int Block_size;
     //Resusltado del producto escalar local de cada vector
     int Result_producto[N];
@@ -38,80 +38,78 @@ int main(int argc, char **argv){
     double Tiempo_inicial, Tiempo_final, Tiempo_total;
 
     //Initializes the MPI execution environment. The variables argc and argv are pointers to command line arguments.
-   MPI_Init(  &argc , &argv);
-   
-   /*Determines the rank of the calling process in a communicator. The rank is an integer value of 0 to n-1, with n being the size of the communicator. 
+    MPI_Init(&argc, &argv);
+
+    /*Determines the rank of the calling process in a communicator. The rank is an integer value of 0 to n-1, with n being the size of the communicator. 
    This way each process has a unique ID that we can use to communicate messages between processes.*/
-   MPI_Comm_rank( MPI_COMM_WORLD , &MiID);
-    
+    MPI_Comm_rank(MPI_COMM_WORLD, &MiID);
+
     /*Gets the number of processes that are associated with a specific communicator. If MPI_COMM_WORLD is used as the communicator, 
     all the processes on the cluster would be used and stored in the variable of size.*/
-   MPI_Comm_size( MPI_COMM_WORLD , &TotProcesos);
+    MPI_Comm_size(MPI_COMM_WORLD, &TotProcesos);
 
     //ver si el proceso actual es el proceso raiz
-   if (MiID == ProcRaiz){
-       int j = 0;
-       //Ciclo que genera numeros aleatorios
-      srand(MPI_Wtime());
-       for (i = 0; i < N; i++){
-           //numero aleatorio entre 0 y 50
-           for (j = 0; j < M; i++)
-           {
-           MatrizA[i][j] = rand()%11;
-           MatrizB[i][j] = rand()%11;
-            printf("Matriz A[%d][%d] = [%d] \n", i, j, MatrizA[i][j]);
-            printf("Matriz B[%d][%d] = [%d] \n", i, j, MatrizB[i][j]);
-               /* code */
-           }           
-       }
-       
-      //inidica cuando inicio la ejecucion 
-      Tiempo_inicial = MPI_Wtime();
-       
-   }
-   //tamaño de los vloques en que se va a dividir la informacion
+    int j = 0;
+    if (MiID == ProcRaiz)
+    {
+        //Ciclo que genera numeros aleatorios
+        srand(MPI_Wtime());
+        for (i = 0; i < N; i++)
+        {
+            //numero aleatorio entre 0 y 50
+            for (j = 0; j < M; j++)
+            {
+                MatrizA[i][j] = rand() % 11;
+                MatrizB[i][j] = rand() % 11;
+                printf("Matriz A[%d][%d] = [%d] \n", i, j, MatrizA[i][j]);
+                printf("Matriz B[%d][%d] = [%d] \n", i, j, MatrizB[i][j]);
+                /* code */
+            }
+        }
+
+        //inidica cuando inicio la ejecucion
+        Tiempo_inicial = MPI_Wtime();
+    }
+    //tamaño de los vloques en que se va a dividir la informacion
     Block_size = M;
     /*si es el proceso raiz envia informacion y recive si no es el proceso raiz 
     envia la informacion a los demas procesos que se guarda en la variable de datos local*/
-    MPI_Scatter( MatrizA , Block_size , MPI_INT , Vector_localA , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
-    MPI_Scatter( MatrizB , Block_size , MPI_INT , Vector_localB , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
-  int Vector_localC[M];  
-   //Multiplicacion escalar local
-   for ( i = 0; i < Block_size; i++)
-   {
-       Vector_localC[i] = Vector_localA[i] + Vector_localB[i]; 
-        
-       //printf("proceso %d se opero %d + %d \n",MiID, Vector_localA[i], Vector_localB[i] );
-   }
-   
-   
-    
+    MPI_Scatter(MatrizA, Block_size, MPI_INT, Vector_localA, Block_size, MPI_INT, ProcRaiz, MPI_COMM_WORLD);
+    MPI_Scatter(MatrizB, Block_size, MPI_INT, Vector_localB, Block_size, MPI_INT, ProcRaiz, MPI_COMM_WORLD);
+    int Vector_localC[M];
+    //Multiplicacion escalar local
+    for (i = 0; i < Block_size; i++)
+    {
+        Vector_localC[i] = Vector_localA[i] + Vector_localB[i];
+
+        //printf("proceso %d se opero %d + %d \n",MiID, Vector_localA[i], Vector_localB[i] );
+    }
+
     // prueba de suma de cada proceso, su id y su resultado
     //printf("Suma local del proceso %d : %d\n", MiID, Suma_local);
 
     //recolecta la suma local de cada proceso y en este caso la suma y recibe el proceso raiz
     //MPI_Reduce(&Suma_local, &Suma_Total, 1, MPI_INT, MPI_SUM, ProcRaiz, MPI_COMM_WORLD);
-    MPI_Gather( Vector_localC , Block_size , MPI_INT , MatrizC , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
+    MPI_Gather(Vector_localC, Block_size, MPI_INT, MatrizC, Block_size, MPI_INT, ProcRaiz, MPI_COMM_WORLD);
 
-    if (MiID == ProcRaiz){
+    if (MiID == ProcRaiz)
+    {
         //indica el tiempo en el que termino
         Tiempo_final = MPI_Wtime();
         //obtenemos el tiempo que tardo en ejecutarse
         Tiempo_total = Tiempo_final - Tiempo_inicial;
 
-        for (i = 0; i < N; i++){
-           for (j = 0; j < M; i++)
-           {
-            printf("Matriz C[%d][%d] = [%d] \n", i, j, MatrizC[i][j]);
-               /* code */
-           }           
-       }
+        for (i = 0; i < N; i++)
+        {
+            for (j = 0; j < M; j++)
+            {
+                printf("Matriz C[%d][%d] = [%d] \n", i, j, MatrizC[i][j]);
+                /* code */
+            }
+        }
         //printf("Suma total : %d con %d procesos en un tiempo de %f\n", Suma_Total, TotProcesos, Tiempo_total);
-
     }
 
     //Terminates the MPI execution environment. The final MPI call that should be made, after it no MPI routines can be called.
     MPI_Finalize();
-
-
 }

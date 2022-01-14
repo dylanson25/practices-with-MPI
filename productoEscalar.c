@@ -15,12 +15,12 @@ int main(int argc, char **argv){
     int MiID, TotProcesos;
 
     //Vectores contine los N elementos la utiliza solo elemento raiz
-    int VectorA[N][M];
-    int VectorB[N][M];
+    int VectorA[N];
+    int VectorB[N];
     //Datos_local va a contener los elementos locales
     int Vector_localA[N];
     int Vector_localB[N];
-    in
+    
 
     int i;
 
