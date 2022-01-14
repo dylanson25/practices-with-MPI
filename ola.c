@@ -15,11 +15,12 @@ int main(int argc, char **argv){
     int MiID, TotProcesos;
 
     //Vectores contine los N elementos la utiliza solo elemento raiz
-    int VectorA[N][M];
-    int VectorB[N][M];
+    int MatrizA[N][M];
+    int MatrizB[N][M];
+    int MatrizC[N][M];
     //Datos_local va a contener los elementos locales
-    int Vector_localA[N];
-    int Vector_localB[N];
+    int Vector_localA[M];
+    int Vector_localB[M];
     in
 
     int i;
@@ -49,53 +50,63 @@ int main(int argc, char **argv){
 
     //ver si el proceso actual es el proceso raiz
    if (MiID == ProcRaiz){
+       int j = 0;
        //Ciclo que genera numeros aleatorios
-       for (i = 0; i < N; i++){
-           //numero aleatorio entre 0 y 50
-           VectorA[i] = rand()%51;
-       }
       srand(MPI_Wtime());
        for (i = 0; i < N; i++){
            //numero aleatorio entre 0 y 50
-           VectorB[i] = rand()%51;
+           for (j = 0; j < M; i++)
+           {
+           MatrizA[i][j] = rand()%11;
+           MatrizB[i][j] = rand()%11;
+            printf("Matriz A[%d][%d] = [%d] \n", i, j, MatrizA[i][j]);
+            printf("Matriz B[%d][%d] = [%d] \n", i, j, MatrizB[i][j]);
+               /* code */
+           }           
        }
-
-      printf("\n");
+       
       //inidica cuando inicio la ejecucion 
       Tiempo_inicial = MPI_Wtime();
        
    }
    //tamaño de los vloques en que se va a dividir la informacion
-    Block_size = N / TotProcesos;
+    Block_size = M;
     /*si es el proceso raiz envia informacion y recive si no es el proceso raiz 
     envia la informacion a los demas procesos que se guarda en la variable de datos local*/
-    MPI_Scatter( VectorA , Block_size , MPI_INT , Vector_localA , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
-    MPI_Scatter( VectorB , Block_size , MPI_INT , Vector_localB , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
-    
+    MPI_Scatter( MatrizA , Block_size , MPI_INT , Vector_localA , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
+    MPI_Scatter( MatrizB , Block_size , MPI_INT , Vector_localB , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
+  int Vector_localC[M];  
    //Multiplicacion escalar local
-    Suma_local = 0;
    for ( i = 0; i < Block_size; i++)
    {
-       Result_producto[i] = Vector_localA[i] * Vector_localB[i]; 
-        Suma_local += Result_producto[i];
-       printf("proceso %d se opero %d + %d \n",MiID, Vector_localA[i], Vector_localB[i] );
+       Vector_localC[i] = Vector_localA[i] + Vector_localB[i]; 
+        
+       //printf("proceso %d se opero %d + %d \n",MiID, Vector_localA[i], Vector_localB[i] );
    }
    
    
     
     // prueba de suma de cada proceso, su id y su resultado
-    printf("Suma local del proceso %d : %d\n", MiID, Suma_local);
+    //printf("Suma local del proceso %d : %d\n", MiID, Suma_local);
 
     //recolecta la suma local de cada proceso y en este caso la suma y recibe el proceso raiz
-    MPI_Reduce(&Suma_local, &Suma_Total, 1, MPI_INT, MPI_SUM, ProcRaiz, MPI_COMM_WORLD);
-    
+    //MPI_Reduce(&Suma_local, &Suma_Total, 1, MPI_INT, MPI_SUM, ProcRaiz, MPI_COMM_WORLD);
+    MPI_Gather( Vector_localC , Block_size , MPI_INT , MatrizC , Block_size , MPI_INT , ProcRaiz , MPI_COMM_WORLD);
 
     if (MiID == ProcRaiz){
         //indica el tiempo en el que termino
         Tiempo_final = MPI_Wtime();
         //obtenemos el tiempo que tardo en ejecutarse
         Tiempo_total = Tiempo_final - Tiempo_inicial;
-        printf("Suma total : %d con %d procesos en un tiempo de %f\n", Suma_Total, TotProcesos, Tiempo_total);
+
+        for (i = 0; i < N; i++){
+           for (j = 0; j < M; i++)
+           {
+            printf("Matriz C[%d][%d] = [%d] \n", i, j, MatrizC[i][j]);
+               /* code */
+           }           
+       }
+        //printf("Suma total : %d con %d procesos en un tiempo de %f\n", Suma_Total, TotProcesos, Tiempo_total);
 
     }
 
