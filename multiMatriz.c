@@ -63,12 +63,16 @@ int main(int argc, char **argv)
                 for (k = 0; k < ColumM1; k++)
                 {
                     suma += MatrizLocal[j][k] * MatrizB[k][i];
+                    printf("Matriz local[%d][%d] : %d * MatrizB[%d][%d] : %d = %d\n", j, k, MatrizLocal[j][k], k, i, MatrizB[k][i],  (MatrizLocal[j][k] * MatrizB[k][i]));
                 }
                 Vector_local[j][i] = suma;
+                printf("vector local [%d][%d] = %d \n", j, i, suma);
             }
         }
 
         MPI_Gather(Vector_local, (NumFilas * ColumM2), MPI_INT, MatrizC, (FilaM1 * ColumM1), MPI_INT, ProcRaiz, MPI_COMM_WORLD);
+        
+        printf("Producto \n");
         if (ProcRaiz == 0)
         {
             for (int i = 0; i < FilaM1; i++)
