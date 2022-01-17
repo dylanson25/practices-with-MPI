@@ -5,8 +5,7 @@
 int main(int argc, char **argv){
 
     //Nos indica cuantos numeros vamos a cpnsiderar
-    const int N = 4; 
-    const int M = 3; 
+    const int N = 1000; 
 
     //Quien es el proceso raiz
     const int ProcRaiz = 0;
