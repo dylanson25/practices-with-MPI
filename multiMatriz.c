@@ -9,17 +9,14 @@ int main(int argc, char **argv)
 
     const FilaM2 = 6;
     const ColumM2 = 4;
-    if (FilaM1 == ColumM2)
+    if (ColumM1 == FilaM2)
     {
         const int ProcRaiz;
         int MiID, TotProcesos;
 
         int MatrizA[FilaM1][ColumM1];
         int MatrizB[FilaM2][ColumM2];
-
-        int NM;
-        NM = FilaM1 * ColumM2;
-        int MatrizC[NM][NM];
+        int MatrizC[FilaM1][ColumM2];
 
         int NumFilas;
         int Block_size;
@@ -28,9 +25,9 @@ int main(int argc, char **argv)
 
         NumFilas = FilaM1 / TotProcesos;
         Block_size = NumFilas * ColumM1;
-        
-        int MatrizLocal[NumFilas][ColumM2];
 
+        int MatrizLocal[NumFilas][ColumM1];
+        int Vector_local[NumFilas][ColumM2];
         MPI_Init(&argc, &argv);
         MPI_Comm_rank(MPI_COMM_WORLD, &MiID);
         MPI_Comm_size(MPI_COMM_WORLD, &TotProcesos);
@@ -54,17 +51,35 @@ int main(int argc, char **argv)
             }
         }
 
-        MPI_Scatter(MatrizA, Block_size, MPI_INT, Vector_localA, Block_size, MPI_INT, ProcRaiz, MPI_COMM_WORLD);
-        MPI_Bcast( MatrizB , (FilaM2 * ColumM2) , MPI_INT , 0 , MPI_COMM_WORLD);
-        for ( i = 0; i < NumFilas; i++)
+        MPI_Scatter(MatrizA, Block_size, MPI_INT, MatrizLocal, Block_size, MPI_INT, ProcRaiz, MPI_COMM_WORLD);
+        MPI_Bcast(MatrizB, (FilaM2 * ColumM2), MPI_INT, 0, MPI_COMM_WORLD);
+
+        int k;
+        for (i = 0; i < ColumM2; i++)
         {
-            for ( j = 0; j < ColumM1; j++)
+            for (j = 0; j < NumFilas; j++)
             {
-                
+                int suma = 0;
+                for (k = 0; k < ColumM1; k++)
+                {
+                    suma += MatrizLocal[j][k] * MatrizB[k][i];
+                }
+                Vector_local[j][i] = suma;
             }
-            
         }
-        
+
+        MPI_Gather(Vector_local, (NumFilas * ColumM2), MPI_INT, MatrizC, (FilaM1 * ColumM1), MPI_INT, ProcRaiz, MPI_COMM_WORLD);
+        if (ProcRaiz == 0)
+        {
+            for (int i = 0; i < FilaM1; i++)
+            {
+                for (int j = 0; j < ColumM2; j++)
+                {
+                    printf("%d ", MatrizC[i][j]);
+                }
+                printf("\n");
+            }
+        }
 
         MPI_Finalize();
     }
