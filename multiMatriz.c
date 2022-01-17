@@ -17,7 +17,8 @@ int main(int argc, char **argv)
         int MatrizA[FilaM1][ColumM1];
         int MatrizB[FilaM2][ColumM2];
 
-        int NM = FilaM1 * ColumM2;
+        int NM;
+        NM = FilaM1 * ColumM2;
         int MatrizC[NM][NM];
 
         int NumFilas;
@@ -57,7 +58,7 @@ int main(int argc, char **argv)
         MPI_Bcast( MatrizB , (FilaM2 * ColumM2) , MPI_INT , 0 , MPI_COMM_WORLD);
         for ( i = 0; i < NumFilas; i++)
         {
-            for ( j = 0; j < count; j++)
+            for ( j = 0; j < ColumM1; j++)
             {
                 
             }
