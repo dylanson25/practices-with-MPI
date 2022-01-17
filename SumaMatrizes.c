@@ -84,6 +84,16 @@ int main(int argc, char **argv)
     MPI_Scatter(MatrizA, Block_size, MPI_INT, Vector_localA, Block_size, MPI_INT, ProcRaiz, MPI_COMM_WORLD);
     MPI_Scatter(MatrizB, Block_size, MPI_INT, Vector_localB, Block_size, MPI_INT, ProcRaiz, MPI_COMM_WORLD);
 
+    for ( i = 0; i < NumFilas; i++)
+    {   
+        for ( j = 0; j < M; j++)
+        {
+            Vector_localC [i][j] = Vector_localA[i][j] + Vector_localB[i][j]; 
+            printf("Vector local [%d][%d] = %d del proceso %d\n", i, j, Vector_localC[i][j], MiID);
+        }
+        
+    }
+    
     MPI_Gather(Vector_localC, Block_size, MPI_INT, MatrizC, Block_size, MPI_INT, ProcRaiz, MPI_COMM_WORLD);
     /** MPI_Gather
      * Recolecta bloques de datos de todos los procesos de un comunicador hacia el modo raiz
