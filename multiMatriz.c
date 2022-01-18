@@ -70,14 +70,14 @@ int main(int argc, char **argv)
             }
         }
 
-        MPI_Gather(Vector_local, (NumFilas * ColumM2), MPI_INT, MatrizC, (FilaM1 * ColumM1), MPI_INT, ProcRaiz, MPI_COMM_WORLD);
+        MPI_Gather(Vector_local, (NumFilas * ColumM2), MPI_INT, MatrizC, (NumFilas * ColumM2), MPI_INT, ProcRaiz, MPI_COMM_WORLD);
         
         printf("Producto \n");
         if (ProcRaiz == 0)
         {
-            for (int i = 0; i < FilaM1; i++)
+            for (i = 0; i < FilaM1; i++)
             {
-                for (int j = 0; j < ColumM2; j++)
+                for (j = 0; j < ColumM2; j++)
                 {
                     printf("%d ", MatrizC[i][j]);
                 }
