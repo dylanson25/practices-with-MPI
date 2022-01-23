@@ -44,11 +44,7 @@ int main(int argc, char **argv)
     int i;
     int j;
     
-    //filas entre el total de procesos
-    NumFilas = N/TotProcesos;
-    
-    //Tamaño de bloque es igual numero de filas por cantidad de columnas
-    Block_size = NumFilas * M;
+   
     /** Ejemplo;
      * Matriz 4 x 3 con 2 procesos
      * NumFilas = 4 / 2 = 2
@@ -63,6 +59,12 @@ int main(int argc, char **argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &MiID);
 
     MPI_Comm_size(MPI_COMM_WORLD, &TotProcesos);
+
+     //filas entre el total de procesos
+    NumFilas = N/TotProcesos;
+    
+    //Tamaño de bloque es igual numero de filas por cantidad de columnas
+    Block_size = NumFilas * M;
 
     //Llenado de las matrizes
     if (MiID == ProcRaiz)
@@ -120,6 +122,7 @@ int main(int argc, char **argv)
                 printf("Matriz C[%d][%d] = [%d] \n", i, j, MatrizC[i][j]);
             }
         }
+        printf("Tiempo total %f", Tiempo_total);
     }
 
     MPI_Finalize();
